@@ -2,7 +2,7 @@
 * Distributed under the Boost Software License, Version 1.0.
 * See accompanying file LICENSE_1_0.txt
 * or copy at http://www.boost.org/LICENSE_1_0.txt
-* 2025-08-07
+* 2025-11-14
 * https://github.com/Aleksandr3Bocharov/refalabbrainfuck
 
 *====================================================================
@@ -14,7 +14,7 @@ Interpretator +
 
     ENTRY Symbols, Tokenizer, Parser, Interpretator, Fails
     EXTRN Put_Char, Get_Char
-    EXTRN P1, M1, Symb, Br, Dg, Map, Map_Accumulator, Del_Accumulator, Empty
+    EXTRN P1, M1, Symb, Br, Dg, Map, Map_Accumulator, Del_FirstW, Empty
     EMPTY Fails, Fails11, Fails12
     EMPTY Next, Prev, Inc, Dec, Write, Read
 
@@ -23,12 +23,12 @@ Interpretator +
 * <Symbols (E(O).Line)*> == (O.Symbol N.Row N.Column)*
 Symbols
     E.Lines +
-        = <Del_Accumulator <Map_Accumulator &Do_Rows 1 E.Lines>>
+        = <Del_FirstW <Map_Accumulator &Do_Rows 1 E.Lines>>
 
 Do_Rows
     S.Row (E.Line) +
         = <P1 S.Row> +
-        <Del_Accumulator <Map_Accumulator &Do_Columns (S.Row 1) E.Line>>	
+        <Del_FirstW <Map_Accumulator &Do_Columns (S.Row 1) E.Line>>	
                       
 Do_Columns
     (S.Row S.Column) S.Symbol +
