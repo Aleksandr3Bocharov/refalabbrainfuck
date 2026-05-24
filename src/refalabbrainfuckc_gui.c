@@ -1,7 +1,7 @@
-// Copyright 2025 Aleksandr Bocharov
+// Copyright 2026 Aleksandr Bocharov
 // Distributed under the Boost Software License, Version 1.0.
 // See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
-// 2025-10-07
+// 2026-05-25
 // https://github.com/Aleksandr3Bocharov/refalabbrainfuck
 
 //====================================================================
@@ -25,7 +25,7 @@ static char *errors = NULL;
 // <GUI_Init> ==
 static void gui_init_(void)
 {
-    if (refal.preva->next != refal.nexta)
+    if (refal.previous_argument->next != refal.next_argument)
     {
         refal.upshot = 2;
         return;
@@ -41,7 +41,7 @@ void (*gui_init_1)(void) = gui_init_;
 // <GUI_Close> ==
 static void gui_close_(void)
 {
-    if (refal.preva->next != refal.nexta)
+    if (refal.previous_argument->next != refal.next_argument)
     {
         refal.upshot = 2;
         return;
@@ -56,16 +56,16 @@ void (*gui_close_1)(void) = gui_close_;
 // <Dialog_FileName> == E(O).FileName
 static void dialog_filename_(void)
 {
-    if (refal.preva->next != refal.nexta)
+    if (refal.previous_argument->next != refal.next_argument)
     {
         refal.upshot = 2;
         return;
     }
     if (dialog_FileName(fileName, open_Error, &file_Status))
-        if (slins(refal.nextr, strlen(fileName) - 1))
+        if (extended_insert_from_free_memory(refal.next_result, strlen(fileName) - 1))
         {
-            rfrstr(fileName, refal.nextr);
-            rftpl(refal.prevr, refal.nextr, refal.nexta);
+            set_string_expression(fileName, refal.next_result);
+            transplantation(refal.previous_result, refal.next_result, refal.next_argument);
         }
     return;
 }
