@@ -1,7 +1,7 @@
-// Copyright 2025 Aleksandr Bocharov
+// Copyright 2026 Aleksandr Bocharov
 // Distributed under the Boost Software License, Version 1.0.
 // See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
-// 2025-10-07
+// 2026-05-25
 // https://github.com/Aleksandr3Bocharov/refalabbrainfuck
 
 //====================================================================
@@ -15,15 +15,15 @@
 // <Put_Char S(N).Char> ==
 static void put_char_(void)
 {
-    const T_LINKCB *p = refal.preva->next;
-    if (p->next != refal.nexta || p->tag != TAGN)
+    const T_LINKCB *linkcb_number = refal.previous_argument->next;
+    if (linkcb_number->next != refal.next_argument || linkcb_number->tag != TAGN)
     {
         refal.upshot = 2;
         return;
     }
-    if (putchar((int)gcoden(p)) == EOF)
+    if (putchar((int)gcoden(linkcb_number)) == EOF)
         if (feof(stdout) != 0 || ferror(stdout) != 0)
-            rfabe("put_char: error");
+            refal_abort_end("put_char: error");
     fflush(stdout);
     return;
 }
@@ -34,20 +34,19 @@ void (*put_char_1)(void) = put_char_;
 // <Get_Char> == S(0..255).Char
 static void get_char_(void)
 {
-    if (refal.preva->next != refal.nexta)
+    if (refal.previous_argument->next != refal.next_argument)
     {
         refal.upshot = 2;
         return;
     }
-    T_LINKCB *p = refal.preva;
-    const int c = getchar();
-    p->tag = TAGN;
-    p->info.codep = NULL;
-    if (c != EOF)
-        pcoden(p, (uint8_t)c);
+    const int symbol = getchar();
+    refal.previous_argument->tag = TAGN;
+    refal.previous_argument->info.codep = NULL;
+    if (symbol != EOF)
+        pcoden(refal.previous_argument, (uint8_t)symbol);
     else
         clearerr(stdin);
-    rftpl(refal.prevr, refal.nextr, refal.nexta);
+    transplantation(refal.previous_result, refal.previous_argument->previous, refal.previous_argument->next);
     return;
 }
 char get_char_0[] = {Z0 'G', 'E', 'T', '_', 'C', 'H', 'A', 'R', (char)8};
