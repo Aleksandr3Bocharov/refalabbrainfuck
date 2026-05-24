@@ -76,7 +76,7 @@ void (*dialog_filename_1)(void) = dialog_filename_;
 // <Dialog_File_Not_Exist> ==
 static void dialog_file_not_exist_(void)
 {
-    if (refal.preva->next != refal.nexta)
+    if (refal.previous_argument->next != refal.next_argument)
     {
         refal.upshot = 2;
         return;
@@ -91,9 +91,9 @@ void (*dialog_file_not_exist_1)(void) = dialog_file_not_exist_;
 // <Dialog_File_Not_Open E(O).Open_Error> ==
 static void dialog_file_not_open_(void)
 {
-    T_LINKCB *p = refal.preva->next;
-    p = rfgstr(open_Error, 255, p);
-    if (p != refal.nexta)
+    T_LINKCB *current_argument = refal.previous_argument->next;
+    current_argument = get_string_expression(open_Error, 255, current_argument, refal.next_argument);
+    if (current_argument != refal.next_argument)
     {
         refal.upshot = 2;
         return;
@@ -108,7 +108,7 @@ void (*dialog_file_not_open_1)(void) = dialog_file_not_open_;
 // <View_Errors_Clear> ==
 static void view_errors_clear_(void)
 {
-    if (refal.preva->next != refal.nexta)
+    if (refal.previous_argument->next != refal.next_argument)
     {
         refal.upshot = 2;
         return;
@@ -125,10 +125,10 @@ void (*view_errors_clear_1)(void) = view_errors_clear_;
 // <View_Errors_Add E(O).Error> ==
 static void view_errors_add_(void)
 {
-    T_LINKCB *p = refal.preva->next;
+    T_LINKCB *current_argument = refal.previous_argument->next;
     char error[256];
-    p = rfgstr(error, 255, p);
-    if (p != refal.nexta)
+    current_argument = get_string_expression(error, 255, current_argument, refal.next_argument);
+    if (current_argument != refal.next_argument)
     {
         refal.upshot = 2;
         return;
@@ -137,14 +137,15 @@ static void view_errors_add_(void)
     {
         errors = (char *)malloc((strlen(error) + 1) * NMBL);
         if (errors == NULL)
-            rfabe("view_errors_add: error");
+            refal_abort_end("view_errors_add: malloc error");
         strcpy(errors, error);
     }
     else
     {
-        errors = (char *)realloc(errors, (strlen(errors) + strlen(error) + 2) * NMBL);
-        if (errors == NULL)
-            rfabe("view_errors_add: error");
+        char *temp_errors = (char *)realloc(errors, (strlen(errors) + strlen(error) + 2) * NMBL);
+        if (temp_errors == NULL)
+            refal_abort_end("view_errors_add: realloc error");
+        errors = temp_errors;
         strcat(strcat(errors, ";"), error);
     }
     return;
@@ -156,16 +157,16 @@ void (*view_errors_add_1)(void) = view_errors_add_;
 // <View_Errors_Show> == &True | &False
 static void view_errors_show_(void)
 {
-    if (refal.preva->next != refal.nexta)
+    if (refal.previous_argument->next != refal.next_argument)
     {
         refal.upshot = 2;
         return;
     }
     if (view_Errors_Show(errors))
-        refal.preva->info.codef = &refalab_true;
+        refal.previous_argument->info.codef = &refalab_true;
     else
-        refal.preva->info.codef = &refalab_false;
-    rftpl(refal.prevr, refal.nextr, refal.nexta);
+        refal.previous_argument->info.codef = &refalab_false;
+    transplantation(refal.previous_result, refal.previous_argument->previous, refal.previous_argument->next);
     return;
 }
 char eview_errors_show_0[] = {Z0 'V', 'I', 'E', 'W', '_', 'E', 'R', 'R', 'O', 'R', 'S', '_', 'S', 'H', 'O', 'W', (char)16};
@@ -175,16 +176,16 @@ void (*view_errors_show_1)(void) = view_errors_show_;
 // <Dialog_Is_Exit> == &True | &False
 static void dialog_is_exit_(void)
 {
-    if (refal.preva->next != refal.nexta)
+    if (refal.previous_argument->next != refal.next_argument)
     {
         refal.upshot = 2;
         return;
     }
     if (dialog_Is_Exit())
-        refal.preva->info.codef = &refalab_true;
+        refal.previous_argument->info.codef = &refalab_true;
     else
-        refal.preva->info.codef = &refalab_false;
-    rftpl(refal.prevr, refal.nextr, refal.nexta);
+        refal.previous_argument->info.codef = &refalab_false;
+    transplantation(refal.previous_result, refal.previous_argument->previous, refal.previous_argument->next);
     return;
 }
 char dialog_is_exit_0[] = {Z6 'D', 'I', 'A', 'L', 'O', 'G', '_', 'I', 'S', '_', 'E', 'X', 'I', 'T', (char)14};
