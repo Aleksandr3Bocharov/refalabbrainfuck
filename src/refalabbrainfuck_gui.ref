@@ -30,28 +30,28 @@ $FUNC Go
 {
     =
         <GUI_Init>
-        <bf_FileName <Dialog_FileName>>
+        <Bf_FileName <Dialog_FileName>>
         <Prouts>
         <GUI_Close>;
 }
 
-$FUNC bf_FileName
+$FUNC Bf_FileName
 {
-    = <bf_FileName_Aux <Dialog_Is_Exit>>;
+    = <Bf_FileName_Aux <Dialog_Is_Exit>>;
     e.FileName = <Open_File <Exist_File e.FileName> e.FileName>;
 }
 
-$FUNC bf_FileName_Aux
+$FUNC Bf_FileName_Aux
 {
     True = ;
-    False = <bf_FileName <Dialog_FileName>>;
+    False = <Bf_FileName <Dialog_FileName>>;
 }
 
 $FUNC Open_File
 {
     False e._ = 
         <Dialog_File_Not_Exist>
-        <bf_FileName <Dialog_FileName>>;
+        <Bf_FileName <Dialog_FileName>>;
     True e.FileName = <Open_File_Aux <Load_File 0 e.FileName>>;
 }
 
@@ -59,7 +59,7 @@ $FUNC Open_File_Aux
 {
     e.Open_Error NULL =
         <Dialog_File_Not_Open e.Open_Error>
-        <bf_FileName <Dialog_FileName>>;
+        <Bf_FileName <Dialog_FileName>>;
     e.Lines s(:EOF:).EOF e._ =
 // Запуск лексического анализатора
         <If_Tokenizer <Tokenizer <Symbols e.Lines>>>;
@@ -73,11 +73,11 @@ $FUNC If_Tokenizer
         <Map Do_View_Errors_Add e.Errors>
         <Is_View_Errors_Show <View_Errors_Show>>;
 // Запуск синтаксического анализатора 
-    E.Tokens =
+    e.Tokens =
 // Запуск интерпретатора
         <Prouts>
         <Interpretator <Parser e.Tokens>>
-        <bf_FileName <Dialog_FileName>>;
+        <Bf_FileName <Dialog_FileName>>;
 }
 
 $FUNC Do_View_Errors_Add
@@ -89,7 +89,7 @@ $FUNC Is_View_Errors_Show
 {
     True =
         <View_Errors_Clear>
-        <bf_FileName <Dialog_FileName>>;
+        <Bf_FileName <Dialog_FileName>>;
     False = <Is_View_Errors_Show_Aux <Dialog_Is_Exit>>;
 }
 
