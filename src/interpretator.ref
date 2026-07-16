@@ -1,136 +1,118 @@
-* Copyright 2025 Aleksandr Bocharov
-* Distributed under the Boost Software License, Version 1.0.
-* See accompanying file LICENSE_1_0.txt
-* or copy at http://www.boost.org/LICENSE_1_0.txt
-* 2025-11-14
-* https://github.com/Aleksandr3Bocharov/refalabbrainfuck
+// Copyright 2026 Aleksandr Bocharov
+// Distributed under the Boost Software License, Version 1.0.
+// See accompanying file LICENSE_1_0.txt
+// or copy at http://www.boost.org/LICENSE_1_0.txt
+// 2026-06-17
+// https://github.com/Aleksandr3Bocharov/refalabbrainfuck
 
-*====================================================================
-* Модуль "Interpretator"
-*====================================================================
+//====================================================================
+// Модуль "Interpretator"
+//====================================================================
 
-Interpretator +
-    START
+$START Interpretator;
 
-    ENTRY Symbols, Tokenizer, Parser, Interpretator, Fails
-    EXTRN Put_Char, Get_Char
-    EXTRN P1, M1, Symb, Br, Dg, Map, Map_Accumulator, Del_FirstW, Empty
-    EMPTY Fails, Fails11, Fails12
-    EMPTY Next, Prev, Inc, Dec, Write, Read
+$ENTRY Symbols, Tokenizer, Parser, Interpretator, Fails;
+$EXTERN Put_Char, Get_Char;
+$EXTERN P1, M1, Symb, Br, Dg, Map, Map_Accumulator, Del_FirstW, Empty;
+$EMPTY Fails, Fails11, Fails12;
+$EMPTY Next, Prev, Inc, Dec, Write, Read;
 
-    IMPL
+//  <Symbols (e(o).Line)*> == (o.Symbol n.Row n.Column)*
+$FUNC Symbols
+{
+    e.Lines = <Del_FirstW <Map_Accumulator Do_Rows 1 e.Lines>>;
+}
 
-* <Symbols (E(O).Line)*> == (O.Symbol N.Row N.Column)*
-Symbols
-    E.Lines +
-        = <Del_FirstW <Map_Accumulator &Do_Rows 1 E.Lines>>
+$FUNC Do_Rows
+{
+    s.Row (e.Line) =
+        <P1 s.Row>
+        <Del_FirstW <Map_Accumulator Do_Columns (s.Row 1) e.Line>>;
+}
 
-Do_Rows
-    S.Row (E.Line) +
-        = <P1 S.Row> +
-        <Del_FirstW <Map_Accumulator &Do_Columns (S.Row 1) E.Line>>	
-                      
-Do_Columns
-    (S.Row S.Column) S.Symbol +
-        = (S.Row <P1 S.Column>) (S.Symbol S.Row S.Column)
+$FUNC Do_Columns
+{
+    (s.Row s.Column) s.Symbol = (s.Row <P1 s.Column>) (s.Symbol s.Row s.Column);
+}
 
-* <Tokenizer (O.Symbol N.Row N.Column)*> == E('><+-.,[]').Tokens |
-*                                           &Fails (V(O).Error)+
-Tokenizer
-    E.Symbols +
-        = <Tokenizer_Aux +
-            <Map &Do_Tokenizer E.Symbols> (<Dg &Fails11> <Dg &Fails12>)>
+//  <Tokenizer (o.Symbol n.Row n.Column)*> == e('><+-.,[]').Tokens | Fails (v(o).Error)+
+$FUNC Tokenizer
+{
+    e.Symbols = <Tokenizer_Aux <Map Do_Tokenizer e.Symbols> (<Dg Fails11> <Dg Fails12>)>;
+}
 
-Tokenizer_Aux
-    E.Tokens () +
-        = E.Tokens
-    E._ (E.Errors) +
-        = &Fails E.Errors
-  
-Do_Tokenizer
-    ('[' S.Row S.Column) +
-        = <Br &Fails12 '=' <Dg &Fails12> +
-            ('SYNTAX_ERROR(12): ' +
-            'Не существует символа '']'' ' +
-            'для символа ''['': ' +
-            '[Строка ' <Symb S.Row> +
-            ', столбец ' <Symb S.Column> ']')> +
-        '['
-    (']' E.RowColumn) +
-        = <Do_Tokenizer_Aux E.RowColumn <Dg &Fails12>>
-    (S('><+-.,').Symbol E._) + 
-        = S.Symbol
-    E._ =
+$FUNC Tokenizer_Aux
+{
+    e.Tokens () = e.Tokens;
+    e._ (e.Errors) = Fails e.Errors;
+}
 
-Do_Tokenizer_Aux
-    S.Row S.Column +
-        = <Br &Fails11 '=' <Dg &Fails11> +
-            ('SYNTAX_ERROR(11): ' +
-            'Неожиданный символ '']'': ' +
-            '[Строка ' <Symb S.Row> +
-            ', столбец ' <Symb S.Column> ']')>
-    S.Row S.Column E.Fails12_B W.Fail12 +
-        = <Br &Fails12 '=' E.Fails12_B> ']'
+$FUNC Do_Tokenizer
+{
+    ('[' s.Row s.Column) =
+        <Br Fails12 '=' <Dg Fails12> ('SYNTAX_ERROR(12): Не существует символа '']'' для символа ''['': [Строка ' <Symb s.Row> ', столбец ' <Symb s.Column> ']')>
+        '[';
+    (']' e.RowColumn) = <Do_Tokenizer_Aux e.RowColumn <Dg Fails12>>;
+    (s('><+-.,').Symbol e._) = s.Symbol;
+    e._ = ;
+}
 
-* <Parser E('><+-.,[]').Tokens> == W.Node*
-* W.Node ::= S(&Next &Prev &Inc &Dec &Write &Read).Leaf | (W.Node*)
-Parser  =
-    '>' E.Rest_Tokens +
-        = &Next <Parser E.Rest_Tokens>
-    '<' E.Rest_Tokens +
-        = &Prev <Parser E.Rest_Tokens>
-    '+' E.Rest_Tokens +
-        = &Inc <Parser E.Rest_Tokens>
-    '-' E.Rest_Tokens +
-        = &Dec <Parser E.Rest_Tokens>
-    '.' E.Rest_Tokens +
-        = &Write <Parser E.Rest_Tokens>
-    ',' E.Rest_Tokens +
-        = &Read <Parser E.Rest_Tokens>
-    '[' E.Rest_Tokens +
-        = <Parser_Aux <Parser E.Rest_Tokens>>
-    ']' E.Rest_Tokens +
-        = (E.Rest_Tokens)      
+$FUNC Do_Tokenizer_Aux
+{
+    s.Row s.Column = <Br Fails11 '=' <Dg Fails11> ('SYNTAX_ERROR(11): Неожиданный символ '']'': [Строка ' <Symb s.Row> ', столбец ' <Symb s.Column> ']')>;
+    s.Row s.Column e.Fails12_B w.Fail12 =
+        <Br Fails12 '=' e.Fails12_B>
+        ']';
+}
 
-Parser_Aux
-    E.Prev_Tokens (E.Rest_Tokens) +
-        = (E.Prev_Tokens) <Parser E.Rest_Tokens>
+/* 
+    <Parser e('><+-.,[]').Tokens> == w.Node*
+    w.Node ::= s(Next Prev Inc Dec Write Read).Leaf | (w.Node*)
+*/
+$FUNC Parser 
+{ 
+    = ;
+    '>' e.Rest_Tokens = Next <Parser e.Rest_Tokens>;
+    '<' e.Rest_Tokens = Prev <Parser e.Rest_Tokens>;
+    '+' e.Rest_Tokens = Inc <Parser e.Rest_Tokens>;
+    '-' e.Rest_Tokens = Dec <Parser e.Rest_Tokens>;
+    '.' e.Rest_Tokens = Write <Parser e.Rest_Tokens>;
+    ',' e.Rest_Tokens = Read <Parser e.Rest_Tokens>;
+    '[' e.Rest_Tokens = <Parser_Aux <Parser e.Rest_Tokens>>;
+    ']' e.Rest_Tokens = (e.Rest_Tokens);
+}
 
-* <Interpretator W.Node*> == 
-* W.Node ::= S(&Next &Prev &Inc &Dec &Write &Read).Leaf | (W.Node*)
-Interpretator
-    E.Parsing_Tree +
-        = <Empty <Step_Interpretator E.Parsing_Tree () 0 ()>>
+$FUNC Parser_Aux
+{
+    e.Prev_Tokens (e.Rest_Tokens) = (e.Prev_Tokens) <Parser e.Rest_Tokens>;
+}
 
-Step_Interpretator
-    &Next E.Rest_Parsing_Tree (E.Cells_B) S.Cell () +
-        = <Step_Interpretator E.Rest_Parsing_Tree (E.Cells_B S.Cell) 0 ()>
-    &Next E.Rest_Parsing_Tree (E.Cells_B) S.Cell (S.Next_Cell E.Cells_A) +
-        = <Step_Interpretator +
-            E.Rest_Parsing_Tree (E.Cells_B S.Cell) S.Next_Cell (E.Cells_A)> 
-    &Prev E.Rest_Parsing_Tree () S.Cell (E.Cells_A) +
-        = <Step_Interpretator E.Rest_Parsing_Tree () 0 (S.Cell E.Cells_A)>
-    &Prev E.Rest_Parsing_Tree (E.Cells_B S.Prev_Cell) S.Cell (E.Cells_A) +
-        = <Step_Interpretator +
-            E.Rest_Parsing_Tree (E.Cells_B) S.Prev_Cell (S.Cell E.Cells_A)>   
-    &Inc E._ 255 W.Cells_A +
-        = <Step_Interpretator E._ 0 W.Cells_A>
-    &Inc E._ S.Cell W.Cells_A +
-        = <Step_Interpretator E._ <P1 S.Cell> W.Cells_A>
-    &Dec E._ 0 W.Cells_A +
-        = <Step_Interpretator E._ 255 W.Cells_A>
-    &Dec E._ S.Cell W.Cells_A +
-        = <Step_Interpretator E._ <M1 S.Cell> W.Cells_A>  
-    &Write E._ S.Cell W.Cells_A +
-        = <Put_Char S.Cell> +
-        <Step_Interpretator E._ S.Cell W.Cells_A>
-    &Read E._ S.__ W.Cells_A +
-        = <Step_Interpretator E._ <Get_Char> W.Cells_A>					
-    W.Node E.Rest_Parsing_Tree W.Cells_B 0 W.Cells_A +
-        = <Step_Interpretator E.Rest_Parsing_Tree W.Cells_B 0 W.Cells_A>
-    (E.Node) E.Rest_Parsing_Tree W.Cells_B S.Cell W.Cells_A +
-        = <Step_Interpretator (E.Node) E.Rest_Parsing_Tree +
-            <Step_Interpretator E.Node W.Cells_B S.Cell W.Cells_A>>
-    E._ = E._
+/*
+    <Interpretator w.Node*> == 
+    w.Node ::= s(Next Prev Inc Dec Write Read).Leaf | (w.Node*)
+*/
+$FUNC Interpretator
+{
+    e.Parsing_Tree = <Empty <Step_Interpretator e.Parsing_Tree () 0 ()>>;
+}
 
-    END
+$FUNC Step_Interpretator
+{
+    Next e.Rest_Parsing_Tree (e.Cells_B) s.Cell () = <Step_Interpretator e.Rest_Parsing_Tree (e.Cells_B s.Cell) 0 ()>;
+    Next e.Rest_Parsing_Tree (e.Cells_B) s.Cell (s.Next_Cell e.Cells_A) = <Step_Interpretator e.Rest_Parsing_Tree (e.Cells_B s.Cell) s.Next_Cell (e.Cells_A)>; 
+    Prev e.Rest_Parsing_Tree () s.Cell (e.Cells_A) = <Step_Interpretator e.Rest_Parsing_Tree () 0 (s.Cell e.Cells_A)>;
+    Prev e.Rest_Parsing_Tree (e.Cells_B s.Prev_Cell) s.Cell (e.Cells_A) = <Step_Interpretator e.Rest_Parsing_Tree (e.Cells_B) s.Prev_Cell (s.Cell e.Cells_A)>;   
+    Inc e._ 255 w.Cells_A = <Step_Interpretator e._ 0 w.Cells_A>;
+    Inc e._ s.Cell w.Cells_A = <Step_Interpretator e._ <P1 s.Cell> w.Cells_A>;
+    Dec e._ 0 w.Cells_A = <Step_Interpretator e._ 255 w.Cells_A>;
+    Dec e._ s.Cell w.Cells_A = <Step_Interpretator e._ <M1 s.Cell> w.Cells_A>;  
+    Write e._ s.Cell w.Cells_A =
+        <Put_Char s.Cell>
+        <Step_Interpretator e._ s.Cell w.Cells_A>;
+    Read e._ s.__ w.Cells_A = <Step_Interpretator e._ <Get_Char> w.Cells_A>;					
+    w.Node e.Rest_Parsing_Tree w.Cells_B 0 w.Cells_A = <Step_Interpretator e.Rest_Parsing_Tree w.Cells_B 0 w.Cells_A>;
+    (e.Node) e.Rest_Parsing_Tree w.Cells_B s.Cell w.Cells_A = <Step_Interpretator (e.Node) e.Rest_Parsing_Tree <Step_Interpretator e.Node w.Cells_B s.Cell w.Cells_A>>;
+    e._ = e._;
+}
+
+$END.
