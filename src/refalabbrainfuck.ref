@@ -20,7 +20,7 @@ $START RefalABBrainfuck;
 
 $ENTRY Go;
 $EXTERN Symbols, Tokenizer, Parser, Interpretator, Fails;
-$EXTRN Prouts, Br, Dg, Map, Load_File, Exist_File;
+$EXTERN Prouts, Br, Dg, Map, Load_File, Exist_File;
 $EXTERN Platform, System, Arg, Exit, Empty;
 $EXTERN Windows, True, False, NULL, EOF;
 $EMPTY Lines;
@@ -32,7 +32,7 @@ $FUNC Go
         <Help>
         <Args (<Arg 1>) <Arg 2>>
 // Запуск лексического анализатора
-        <If_Tokenizer <Tokenizer <Symbols <Dg &Lines>>>>;
+        <If_Tokenizer <Tokenizer <Symbols <Dg Lines>>>>;
 }
 
 // Смена кодовой страницы в Windows на UTF-8
