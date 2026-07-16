@@ -1,19 +1,19 @@
 #!/bin/sh 
 
-# Copyright 2025 Aleksandr Bocharov
+# Copyright 2026 Aleksandr Bocharov
 # Distributed under the Boost Software License, Version 1.0.
 # See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
-# 2025-10-17
+# 2026-07-17
 # https://github.com/Aleksandr3Bocharov/refalabbrainfuck
 
 RAYLIBCFLAGS="-Wall -O2"
 RAYLIBLFLAGS="-lraylib -lm"
 
 mkdir -p bin
-$REFALABBIN/refalabc src/refalabbrainfuck_gui -a,"-o src/refalabbrainfuck_gui.o" > refalabbrainfuck_gui.log
-$REFALABBIN/refalabc src/interpretator -a,"-o src/interpretator.o" >> refalabbrainfuck_gui.log
-clang $REFALABCFLAGS -DPOSIX -I$REFALABINCLUDE -c src/interpretatorc.c -o src/interpretatorc.o >> refalabbrainfuck_gui.log
-clang $REFALABCFLAGS -DPOSIX -I$REFALABINCLUDE -c src/refalabbrainfuckc_gui.c -o src/refalabbrainfuckc_gui.o >> refalabbrainfuck_gui.log
+$REFALABBIN/refalabc src/refalabbrainfuck_gui -l,"-o src/refalabbrainfuck_gui.o -O2 -Wno-override-module" > refalabbrainfuck_gui.log
+$REFALABBIN/refalabc src/interpretator -l,"-o src/interpretator.o -O2 -Wno-override-module" >> refalabbrainfuck_gui.log
+clang $REFALABCFLAGS -I$REFALABINCLUDE -c src/interpretatorc.c -o src/interpretatorc.o >> refalabbrainfuck_gui.log
+clang $REFALABCFLAGS -I$REFALABINCLUDE -c src/refalabbrainfuckc_gui.c -o src/refalabbrainfuckc_gui.o >> refalabbrainfuck_gui.log
 clang $RAYLIBCFLAGS -c src/gui.c -o src/gui.o >> refalabbrainfuck_gui.log
-clang -o bin/refalabbrainfuck_gui src/refalabbrainfuck_gui.o src/refalabbrainfuckc_gui.o src/interpretator.o src/interpretatorc.o $REFALABLIB/obj/mainrf.o -L$REFALABLIB -lrefalab src/gui.o $RAYLIBLFLAGS >> refalabbrainfuck_gui.log
+clang -o bin/refalabbrainfuck_gui src/refalabbrainfuck_gui.o src/refalabbrainfuckc_gui.o src/interpretator.o src/interpretatorc.o $REFALABLFLAGS src/gui.o $RAYLIBLFLAGS >> refalabbrainfuck_gui.log
 bin/refalabbrainfuck_gui
