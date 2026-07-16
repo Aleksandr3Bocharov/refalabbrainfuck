@@ -1,101 +1,103 @@
-* Copyright 2025 Aleksandr Bocharov
-* Distributed under the Boost Software License, Version 1.0.
-* See accompanying file LICENSE_1_0.txt
-* or copy at http://www.boost.org/LICENSE_1_0.txt
-* 2025-10-17
-* https://github.com/Aleksandr3Bocharov/refalabbrainfuck
+// Copyright 2026 Aleksandr Bocharov
+// Distributed under the Boost Software License, Version 1.0.
+// See accompanying file LICENSE_1_0.txt
+// or copy at http://www.boost.org/LICENSE_1_0.txt
+// 2026-07-17
+// https://github.com/Aleksandr3Bocharov/refalabbrainfuck
 
-*====================================================================
-* RefalABBrainfuck
-*
-* Программа "RefalABBrainfuck" написана
-* на языке программирования РефалАБ.
-* https://github.com/Aleksandr3Bocharov/refalab
-*
-* Интерпретатор языка программирования Brainfuck
-* на РефалАБ.
-*
-* Программа "RefalABBrainfuck" интерпретирует 
-* код на языке Brainfuck из исходного файла.
-*====================================================================
+//========================================================================================
+// RefalABBrainfuck
+//
+// Программа "RefalABBrainfuck" написана на языке программирования РефалАБ.
+// https://github.com/Aleksandr3Bocharov/refalab
+//
+// Интерпретатор языка программирования Brainfuck на РефалАБ.
+//
+// Программа "RefalABBrainfuck" интерпретирует код на языке Brainfuck из исходного файла.
+//========================================================================================
 
-RefalABBrainfuck +
-    START
+$START RefalABBrainfuck;
 
-    ENTRY Go
-    EXTRN Symbols, Tokenizer, Parser, Interpretator, Fails
-    EXTRN Prouts, Br, Dg, Map, Load_File, Exist_File
-    EXTRN Platform, System, Arg, Exit, Empty
-    EXTRN Windows, True, False, NULL, EOF
-    EMPTY Lines, Parsing_Tree
+$ENTRY Go;
+$EXTERN Symbols, Tokenizer, Parser, Interpretator, Fails;
+$EXTRN Prouts, Br, Dg, Map, Load_File, Exist_File;
+$EXTERN Platform, System, Arg, Exit, Empty;
+$EXTERN Windows, True, False, NULL, EOF;
+$EMPTY Lines;
 
-    IMPL
+$FUNC Go
+{
+    =
+        <Chcp_UTF8 <Platform>>
+        <Help>
+        <Args (<Arg 1>) <Arg 2>>
+// Запуск лексического анализатора
+        <If_Tokenizer <Tokenizer <Symbols <Dg &Lines>>>>;
+}
 
-Go      = <chcp_UTF8 <Platform>> <Help> +
-        <Args (<Arg 1>) <Arg 2>> +
-* Запуск лексического анализатора
-        <If_Tokenizer <Tokenizer <Symbols <Dg &Lines>>>>
+// Смена кодовой страницы в Windows на UTF-8
+$FUNC Chcp_UTF8
+{
+    Windows = <Empty <System 'chcp 65001 > nul'>>; 
+    e._ = ;
+}
 
-* Смена кодовой страницы в Windows на UTF-8
-chcp_UTF8
-    &Windows +
-        = <Empty <System 'chcp 65001'>> 
-    E._ =
+// Вывод справки
+$FUNC Help
+{
+    = <Prouts 'Интерпретатор языка программирования Brainfuck на РефалАБ.\n\nПрограмма "RefalABBrainfuck" интерпретирует код на языке Brainfuck из исходного файла.\n'>;
+}
 
-* Вывод справки
-Help    = <Prouts 'Интерпретатор языка ' +
-            'программирования Brainfuck на РефалАБ.\n\n' +
-            'Программа "RefalABBrainfuck" ' + 
-            'интерпретирует код на языке Brainfuck ' +
-            'из исходного файла.\n'>
+$FUNC Args
+{   
+    (e._) v.__ = <Args_Error>;
+    () = <Args_Error>;
+    (e.FileName) = <Open_File <Exist_File e.FileName> e.FileName>;
+}
 
-Args    
-    (E._) V.__ +
-        = <Args_Error>
-    ()  = <Args_Error>
-    (E.FileName) +
-        = <Open_File <Exist_File E.FileName> E.FileName>
+$FUNC Args_Error
+{
+    = 
+        <Prouts 'FATAL_ERROR (9): Синтаксис - refalabbrainfuck имя_файла'>
+        <Exit 9>;
+}
 
-Args_Error
-        = <Prouts 'FATAL_ERROR (9): ' +
-            'Синтаксис - refalabbrainfuck имя_файла'> +
-        <Exit 9>
+$FUNC Open_File
+{
+    False e.FileName =
+        <Prouts 'FATAL_ERROR (19): Исходный файл "' e.FileName '" не существует.'>
+        <Exit 19>;
+    True e.FileName = 
+        <Prouts 'Открытие исходного файла "' e.FileName '" с кодом на языке программирования Brainfuck.\n'>
+        <Open_File_Aux <Load_File 0 e.FileName>>;
+}
 
-Open_File
-    &False E.FileName +
-        = <Prouts 'FATAL_ERROR (19): ' +
-            'Исходный файл "' E.FileName '" не существует.'> +
-        <Exit 19>
-    &True E.FileName +
-        = <Prouts 'Открытие исходного файла "' E.FileName '" ' +
-            'с кодом на языке программирования ' +
-            'Brainfuck.\n'> +
-        <Open_File_Aux <Load_File 0 E.FileName>>
+$FUNC Open_File_Aux
+{
+    e.Open_Error NULL =
+        <Prouts 'FATAL_ERROR (29): ' e.Open_Error>
+        <Exit 29>;
+    e.Lines s(:EOF:).EOF e._ = <Br Lines '=' e.Lines>;
+}
 
-Open_File_Aux
-    E.Open_Error &NULL +
-        = <Prouts 'FATAL_ERROR (29): ' E.Open_Error> <Exit 29>
-    E.Lines S(:EOF:).EOF E._ +
-        = <Br &Lines '=' E.Lines>
+$FUNC If_Tokenizer
+{
+// Если Fails, то завершение программы
+    Fails e.Errors =
+        <Prouts 'FATAL_ERROR (99): Имеется одна или больше синтаксических ошибок.'>
+        <Map Do_Prout_Line e.Errors>
+        <Exit 99>;
+// Запуск синтаксического анализатора 
+    e.Tokens =
+// Запуск интерпретатора
+        <Prouts 'Запуск интерпретатора кода на языке программирования Brainfuck.'> 
+        <Interpretator <Parser e.Tokens>>
+        <Prouts>;
+}
 
-If_Tokenizer
-* Если Fails, то завершение программы
-    &Fails E.Errors +
-        = <Prouts 'FATAL_ERROR (99): ' +
-            'Имеется одна или больше ' +
-            'синтаксических ошибок.'> +
-        <Map &Do_Prout_Line E.Errors> +
-        <Exit 99>
-* Запуск синтаксического анализатора 
-    E.Tokens +
-        = <Br &Parsing_Tree '=' <Parser E.Tokens>> +
-* Запуск интерпретатора
-        <Prouts 'Запуск интерпретатора кода ' +
-            'на языке программирования Brainfuck.'> +
-        <Interpretator <Dg &Parsing_Tree>> <Prouts>
+$FUNC Do_Prout_Line
+{
+    (e.Line) = <Prouts e.Line>;
+}
 
-Do_Prout_Line
-    (E.Line) +
-        = <Prouts E.Line>
-
-    END
+$END.

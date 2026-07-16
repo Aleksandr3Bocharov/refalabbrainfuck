@@ -1,94 +1,102 @@
-* Copyright 2025 Aleksandr Bocharov
-* Distributed under the Boost Software License, Version 1.0.
-* See accompanying file LICENSE_1_0.txt
-* or copy at http://www.boost.org/LICENSE_1_0.txt
-* 2025-10-07
-* https://github.com/Aleksandr3Bocharov/refalabbrainfuck
+// Copyright 2026 Aleksandr Bocharov
+// Distributed under the Boost Software License, Version 1.0.
+// See accompanying file LICENSE_1_0.txt
+// or copy at http://www.boost.org/LICENSE_1_0.txt
+// 2026-07-17
+// https://github.com/Aleksandr3Bocharov/refalabbrainfuck
 
-*====================================================================
-* RefalABBrainfuck (GUI версия)
-*
-* Программа "RefalABBrainfuck" написана
-* на языке программирования РефалАБ.
-* https://github.com/Aleksandr3Bocharov/refalab
-*
-* Интерпретатор языка программирования Brainfuck
-* на РефалАБ.
-*
-* Программа "RefalABBrainfuck" интерпретирует 
-* код на языке Brainfuck из исходного файла.
-*====================================================================
+//========================================================================================
+// RefalABBrainfuck (GUI версия)
+//
+// Программа "RefalABBrainfuck" написана на языке программирования РефалАБ.
+// https://github.com/Aleksandr3Bocharov/refalab
+//
+// Интерпретатор языка программирования Brainfuck на РефалАБ.
+//
+// Программа "RefalABBrainfuck" интерпретирует код на языке Brainfuck из исходного файла.
+//========================================================================================
 
-RefalABBrainfuck_GUI +
-    START
+$START RefalABBrainfuck_GUI;
 
-    ENTRY Go
-    EXTRN Symbols, Tokenizer, Parser, Interpretator, Fails
-    EXTRN GUI_Init, GUI_Close
-    EXTRN Dialog_FileName, Dialog_Is_Exit, Dialog_File_Not_Exist, Dialog_File_Not_Open
-    EXTRN View_Errors_Clear, View_Errors_Add, View_Errors_Show
-    EXTRN Prouts, Br, Dg, Map, Load_File, Exist_File
-    EXTRN True, False, NULL, EOF
-    EMPTY Lines, Parsing_Tree
+$ENTRY Go;
+$EXTERN Symbols, Tokenizer, Parser, Interpretator, Fails;
+$EXTERN GUI_Init, GUI_Close;
+$EXTERN Dialog_FileName, Dialog_Is_Exit, Dialog_File_Not_Exist, Dialog_File_Not_Open;
+$EXTERN View_Errors_Clear, View_Errors_Add, View_Errors_Show;
+$EXTERN Prouts, Br, Dg, Map, Load_File, Exist_File;
+$EXTERN True, False, NULL, EOF;
 
-    IMPL
-
-Go      = <GUI_Init> <bf_FileName <Dialog_FileName>> <Prouts> <GUI_Close>
-            
-bf_FileName
-        = <bf_FileName_Aux <Dialog_Is_Exit>>
-    E.FileName +
-        = <Open_File <Exist_File E.FileName> E.FileName>
-
-bf_FileName_Aux
-    &True +
-        =
-    &False +
-        = <bf_FileName <Dialog_FileName>>
-
-Open_File
-    &False E._ +
-        = <Dialog_File_Not_Exist> <bf_FileName <Dialog_FileName>>
-    &True E.FileName +
-        = <Open_File_Aux <Load_File 0 E.FileName>>
-
-Open_File_Aux
-    E.Open_Error &NULL +
-        = <Dialog_File_Not_Open E.Open_Error> <bf_FileName <Dialog_FileName>>
-    E.Lines S(:EOF:).EOF E._ +
-        = <Br &Lines '=' E.Lines> +
-* Запуск лексического анализатора
-        <If_Tokenizer <Tokenizer <Symbols <Dg &Lines>>>>
-
-If_Tokenizer
-* Если Fails, то вывод ошибок
-    &Fails E.Errors +
-        = <View_Errors_Add 'FATAL_ERROR (99): ' +
-            'Имеется одна или больше ' +
-            'синтаксических ошибок.'> +
-        <Map &Do_View_Errors_Add E.Errors> +
-        <Is_View_Errors_Show <View_Errors_Show>>
-* Запуск синтаксического анализатора 
-    E.Tokens +
-        = <Br &Parsing_Tree '=' <Parser E.Tokens>> +
-* Запуск интерпретатора
-        <Prouts> <Interpretator <Dg &Parsing_Tree>> +
+$FUNC Go
+{
+    =
+        <GUI_Init>
         <bf_FileName <Dialog_FileName>>
+        <Prouts>
+        <GUI_Close>;
+}
 
-Do_View_Errors_Add
-    (E.Error) +
-        = <View_Errors_Add E.Error>
+$FUNC bf_FileName
+{
+    = <bf_FileName_Aux <Dialog_Is_Exit>>;
+    e.FileName = <Open_File <Exist_File e.FileName> e.FileName>;
+}
 
-Is_View_Errors_Show
-    &True +
-        = <View_Errors_Clear> <bf_FileName <Dialog_FileName>>
-    &False +
-        = <Is_View_Errors_Show_Aux <Dialog_Is_Exit>>
+$FUNC bf_FileName_Aux
+{
+    True = ;
+    False = <bf_FileName <Dialog_FileName>>;
+}
 
-Is_View_Errors_Show_Aux
-    &True +
-        = <View_Errors_Clear>
-    &False +
-        = <Is_View_Errors_Show <View_Errors_Show>>
+$FUNC Open_File
+{
+    False e._ = 
+        <Dialog_File_Not_Exist>
+        <bf_FileName <Dialog_FileName>>;
+    True e.FileName = <Open_File_Aux <Load_File 0 e.FileName>>;
+}
 
-    END
+$FUNC Open_File_Aux
+{
+    e.Open_Error NULL =
+        <Dialog_File_Not_Open e.Open_Error>
+        <bf_FileName <Dialog_FileName>>;
+    e.Lines s(:EOF:).EOF e._ =
+// Запуск лексического анализатора
+        <If_Tokenizer <Tokenizer <Symbols e.Lines>>>;
+}
+
+$FUNC If_Tokenizer
+{
+// Если Fails, то вывод ошибок
+    Fails e.Errors =
+        <View_Errors_Add 'FATAL_ERROR (99): Имеется одна или больше синтаксических ошибок.'>
+        <Map Do_View_Errors_Add e.Errors>
+        <Is_View_Errors_Show <View_Errors_Show>>;
+// Запуск синтаксического анализатора 
+    E.Tokens =
+// Запуск интерпретатора
+        <Prouts>
+        <Interpretator <Parser e.Tokens>>
+        <bf_FileName <Dialog_FileName>>;
+}
+
+$FUNC Do_View_Errors_Add
+{
+    (e.Error) = <View_Errors_Add e.Error>;
+}
+
+$FUNC Is_View_Errors_Show
+{
+    True =
+        <View_Errors_Clear>
+        <bf_FileName <Dialog_FileName>>;
+    False = <Is_View_Errors_Show_Aux <Dialog_Is_Exit>>;
+}
+
+$FUNC Is_View_Errors_Show_Aux
+{
+    True = <View_Errors_Clear>;
+    False = <Is_View_Errors_Show <View_Errors_Show>>;
+}
+
+$END.
