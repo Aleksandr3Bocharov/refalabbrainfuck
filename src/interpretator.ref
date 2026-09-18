@@ -2,7 +2,7 @@
 // Distributed under the Boost Software License, Version 1.0.
 // See accompanying file LICENSE_1_0.txt
 // or copy at http://www.boost.org/LICENSE_1_0.txt
-// 2026-06-17
+// 2026-09-18
 // https://github.com/Aleksandr3Bocharov/refalabbrainfuck
 
 //====================================================================
@@ -12,22 +12,22 @@
 $START Interpretator;
 
 $ENTRY Symbols, Tokenizer, Parser, Interpretator, Fails;
-$EXTERN Put_Char, Get_Char;
-$EXTERN P1, M1, Symb, Br, Dg, Map, Map_Accumulator, Del_FirstW, Empty;
+$EXTERN Put_Char, Get_Byte;
+$EXTERN P1, M1, Symb, Br, Dg, Map, Map_Accumulator, Del_Left, Empty;
 $EMPTY Fails, Fails11, Fails12;
 $EMPTY Next, Prev, Inc, Dec, Write, Read;
 
 //  <Symbols (e(o).Line)*> == (o.Symbol n.Row n.Column)*
 $FUNC Symbols
 {
-    e.Lines = <Del_FirstW <Map_Accumulator Do_Rows 1 e.Lines>>;
+    e.Lines = <Del_Left 1 <Map_Accumulator Do_Rows 1 e.Lines>>;
 }
 
 $FUNC Do_Rows
 {
     s.Row (e.Line) =
         <P1 s.Row>
-        <Del_FirstW <Map_Accumulator Do_Columns (s.Row 1) e.Line>>;
+        <Del_Left 1 <Map_Accumulator Do_Columns (s.Row 1) e.Line>>;
 }
 
 $FUNC Do_Columns
@@ -50,7 +50,7 @@ $FUNC Tokenizer_Aux
 $FUNC Do_Tokenizer
 {
     ('[' s.Row s.Column) =
-        <Br Fails12 '=' <Dg Fails12> ('SYNTAX_ERROR(12): Не существует символа '']'' для символа ''['': [Строка ' <Symb s.Row> ', столбец ' <Symb s.Column> ']')>
+        <Br Fails12 '=' <Dg Fails12> ('SYNTAX_ERROR(12): Не существует символа '']'' для символа ''['': [Строка ' <Symb 10 s.Row> ', столбец ' <Symb 10 s.Column> ']')>
         '[';
     (']' e.RowColumn) = <Do_Tokenizer_Aux e.RowColumn <Dg Fails12>>;
     (s('><+-.,').Symbol e._) = s.Symbol;
@@ -59,7 +59,7 @@ $FUNC Do_Tokenizer
 
 $FUNC Do_Tokenizer_Aux
 {
-    s.Row s.Column = <Br Fails11 '=' <Dg Fails11> ('SYNTAX_ERROR(11): Неожиданный символ '']'': [Строка ' <Symb s.Row> ', столбец ' <Symb s.Column> ']')>;
+    s.Row s.Column = <Br Fails11 '=' <Dg Fails11> ('SYNTAX_ERROR(11): Неожиданный символ '']'': [Строка ' <Symb 10 s.Row> ', столбец ' <Symb 10 s.Column> ']')>;
     s.Row s.Column e.Fails12_B w.Fail12 =
         <Br Fails12 '=' e.Fails12_B>
         ']';
@@ -109,7 +109,7 @@ $FUNC Step_Interpretator
     Write e._ s.Cell w.Cells_A =
         <Put_Char s.Cell>
         <Step_Interpretator e._ s.Cell w.Cells_A>;
-    Read e._ s.__ w.Cells_A = <Step_Interpretator e._ <Get_Char> w.Cells_A>;					
+    Read e._ s.__ w.Cells_A = <Step_Interpretator e._ <Get_Byte> w.Cells_A>;					
     w.Node e.Rest_Parsing_Tree w.Cells_B 0 w.Cells_A = <Step_Interpretator e.Rest_Parsing_Tree w.Cells_B 0 w.Cells_A>;
     (e.Node) e.Rest_Parsing_Tree w.Cells_B s.Cell w.Cells_A = <Step_Interpretator (e.Node) e.Rest_Parsing_Tree <Step_Interpretator e.Node w.Cells_B s.Cell w.Cells_A>>;
     e._ = e._;

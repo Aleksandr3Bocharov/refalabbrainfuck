@@ -1,7 +1,7 @@
 // Copyright 2026 Aleksandr Bocharov
 // Distributed under the Boost Software License, Version 1.0.
 // See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
-// 2026-05-25
+// 2026-09-18
 // https://github.com/Aleksandr3Bocharov/refalabbrainfuck
 
 //====================================================================
@@ -31,8 +31,8 @@ char put_char_0[] = {Z0 'P', 'U', 'T', '_', 'C', 'H', 'A', 'R', (char)8};
 G_L_B uint8_t refalab_put_char = '\122';
 void (*put_char_1)(void) = put_char_;
 
-// <Get_Char> == S(0..255).Char
-static void get_char_(void)
+// <Get_Byte> == S(0..255).Byte
+static void get_byte_(void)
 {
     if (refal.previous_argument->next != refal.next_argument)
     {
@@ -49,6 +49,6 @@ static void get_char_(void)
     transplantation(refal.previous_result, refal.previous_argument->previous, refal.previous_argument->next);
     return;
 }
-char get_char_0[] = {Z0 'G', 'E', 'T', '_', 'C', 'H', 'A', 'R', (char)8};
-G_L_B uint8_t refalab_get_char = '\122';
-void (*get_char_1)(void) = get_char_;
+char get_byte_0[] = {Z0 'G', 'E', 'T', '_', 'B', 'Y', 'T', 'E', (char)8};
+G_L_B uint8_t refalab_get_byte = '\122';
+void (*get_byte_1)(void) = get_byte_;
