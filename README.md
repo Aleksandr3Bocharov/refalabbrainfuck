@@ -37,7 +37,7 @@
     - Распаковать в любую директорию;
     - Отредактировать `make_run_gui.bat`, изменив путь в строке:
 
-        set RAYLIB=F:\Programming\raylib-5.5_win64_mingw-w64
+            set RAYLIB=F:\Programming\raylib-5.5_win64_mingw-w64
 
 на свой путь к распакованному raylib.
 
