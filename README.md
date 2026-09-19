@@ -121,13 +121,13 @@
 
 После первой сборки можно запускать программу напрямую:
 
-Windows:
+- Windows:
 
-    bin\refalabbrainfuck.exe program.b
+        bin\refalabbrainfuck.exe program.b
 
-POSIX:
+- POSIX:
 
-    ./bin/refalabbrainfuck program.b
+        ./bin/refalabbrainfuck program.b
 
 Это быстрее, так как не требует перекомпиляции исходников.
 
@@ -135,13 +135,13 @@ POSIX:
 
 Сборка и запуск графической версии:
 
-Windows:
+- Windows:
 
-    make_run_gui.bat
+        make_run_gui.bat
 
-POSIX:
+- POSIX:
 
-    ./make_run_gui
+        ./make_run_gui
 
 **Особенности GUI версии:**
 - Графическое окно 1024×360 пикселей;
@@ -175,13 +175,13 @@ POSIX:
 
 После первой сборки можно запускать программу напрямую:
 
-Windows:
+- Windows:
 
-    bin\refalabbrainfuck_gui.exe
+        bin\refalabbrainfuck_gui.exe
 
-POSIX:
+- POSIX:
 
-    ./bin/refalabbrainfuck_gui
+        ./bin/refalabbrainfuck_gui
 
 ## Команды Brainfuck
 
