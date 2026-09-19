@@ -68,13 +68,13 @@ POSIX:
 - Программа принимает ровно один аргумент — имя файла с Brainfuck-кодом;
 - Файл должен существовать.
 
-**Пример запуска (POSIX):**
-
-    ./make_run examples/hello1.b
-
 **Пример запуска (Windows):**
 
     make_run.bat examples\hello1.b
+
+**Пример запуска (POSIX):**
+
+    ./make_run examples/hello1.b
 
 **Вывод программы:**
 
