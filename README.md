@@ -103,4 +103,4 @@
 
 ## Лицензия
 
-Boost Software License 1.0 (BSL-1.0). Подробности в файле [LICENSE_1_0.txt]().
+Boost Software License 1.0 (BSL-1.0). Подробности в файле [LICENSE_1_0.txt](LICENSE_1_0.txt).
