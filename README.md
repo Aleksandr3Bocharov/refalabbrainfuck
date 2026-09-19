@@ -52,9 +52,11 @@
 **Сборка и запуск программы с указанием файла с Brainfuck-кодом:**
 
 Windows:
+
     make_run.bat program.b
 
 POSIX:
+
     ./make_run program.b
 
 **Что происходит:**
@@ -96,9 +98,11 @@ POSIX:
 После первой сборки можно запускать программу напрямую:
 
 Windows:
+
     bin\refalabbrainfuck.exe program.b
 
 POSIX:
+
     ./bin/refalabbrainfuck program.b
 
 Это быстрее, так как не требует перекомпиляции исходников.
@@ -108,9 +112,11 @@ POSIX:
 Сборка и запуск графической версии:
 
 Windows:
+
     make_run_gui.bat
 
 POSIX:
+
     ./make_run_gui
 
 **Особенности GUI версии:**
@@ -146,9 +152,11 @@ POSIX:
 После первой сборки можно запускать программу напрямую:
 
 Windows:
+
     bin\refalabbrainfuck_gui.exe
 
 POSIX:
+
     ./bin/refalabbrainfuck_gui
 
 Это быстрее, так как не требует перекомпиляции исходников.
