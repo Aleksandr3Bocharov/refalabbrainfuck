@@ -49,9 +49,13 @@
 
 ### Консольная версия
 
-Сборка и запуск программы с указанием файла с Brainfuck-кодом:
+**Сборка и запуск программы с указанием файла с Brainfuck-кодом:**
 
-    make_run program.b
+Windows:
+    make_run.bat program.b
+
+POSIX:
+    ./make_run program.b
 
 **Что происходит:**
 1. Скрипт компилирует исходные файлы РефалАБ и C
@@ -62,9 +66,13 @@
 - Программа принимает ровно один аргумент — имя файла с Brainfuck-кодом;
 - Файл должен существовать.
 
-**Пример запуска:**
+**Пример запуска (POSIX):**
 
     ./make_run examples/hello1.b
+
+**Пример запуска (Windows):**
+
+    make_run.bat examples\hello1.b
 
 **Вывод программы:**
 
@@ -87,6 +95,10 @@
 
 После первой сборки можно запускать программу напрямую:
 
+Windows:
+    bin\refalabbrainfuck.exe program.b
+
+POSIX:
     ./bin/refalabbrainfuck program.b
 
 Это быстрее, так как не требует перекомпиляции исходников.
@@ -95,6 +107,10 @@
 
 Сборка и запуск графической версии:
 
+Windows:
+    make_run_gui.bat
+
+POSIX:
     ./make_run_gui
 
 **Особенности GUI версии:**
@@ -129,7 +145,13 @@
 
 После первой сборки можно запускать программу напрямую:
 
+Windows:
+    bin\refalabbrainfuck_gui.exe
+
+POSIX:
     ./bin/refalabbrainfuck_gui
+
+Это быстрее, так как не требует перекомпиляции исходников.
 
 ## Команды Brainfuck
 
