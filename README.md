@@ -104,3 +104,16 @@
 ## Лицензия
 
 Boost Software License 1.0 (BSL-1.0). Подробности в файле [LICENSE_1_0.txt](LICENSE_1_0.txt).
+
+## Автор
+
+Александр Бочаров (Aleksandr Bocharov)
+
+2024-2026
+
+## Ссылки
+
+- [РефалАБ](https://github.com/Aleksandr3Bocharov/refalab) — основной проект
+- [Brainfuck на Wikipedia](https://ru.wikipedia.org/wiki/Brainfuck)
+- [raylib](https://www.raylib.com/)
+- [raygui](https://github.com/raysan5/raygui)
