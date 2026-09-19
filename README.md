@@ -35,10 +35,9 @@
 - Windows:
     - Скачать [raylib 5.5 для Windows x64 (mingw-w64)](https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_win64_mingw-w64.zip) или [raylib 5.5 для Windows x86 (mingw-w64)](https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_win32_mingw-w64.zip);
     - Распаковать в любую директорию;
-    - Отредактировать `make_run_gui.bat`, изменив путь в строке:
+    - Отредактировать `make_run_gui.bat`, изменив путь в строке на свой путь к распакованному raylib:
 
             set RAYLIB=F:\Programming\raylib-5.5_win64_mingw-w64
-на свой путь к распакованному raylib.
 
 - POSIX:
     - Установить через пакетный менеджер (например, `apt install libraylib-dev` для Ubuntu);
@@ -76,13 +75,13 @@
 
 **Сборка и запуск программы с указанием файла с Brainfuck-кодом:**
 
-Windows:
+- Windows:
 
-    make_run.bat program.b
+        make_run.bat program.b
 
-POSIX:
+- POSIX:
 
-    ./make_run program.b
+        ./make_run program.b
 
 **Что происходит:**
 1. Скрипт компилирует исходные файлы РефалАБ и C;
