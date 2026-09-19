@@ -32,18 +32,18 @@
 
 **raylib 5.5:**
 
-Windows:
-- Скачать [raylib 5.5 для Windows x64 (mingw-w64)](https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_win64_mingw-w64.zip) или [raylib 5.5 для Windows x86 (mingw-w64)](https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_win32_mingw-w64.zip);
-- Распаковать в любую директорию;
-- Отредактировать `make_run_gui.bat`, изменив путь в строке:
+- Windows:
+    - Скачать [raylib 5.5 для Windows x64 (mingw-w64)](https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_win64_mingw-w64.zip) или [raylib 5.5 для Windows x86 (mingw-w64)](https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_win32_mingw-w64.zip);
+    - Распаковать в любую директорию;
+    - Отредактировать `make_run_gui.bat`, изменив путь в строке:
 
-    set RAYLIB=F:\Programming\raylib-5.5_win64_mingw-w64
+        set RAYLIB=F:\Programming\raylib-5.5_win64_mingw-w64
 
 на свой путь к распакованному raylib.
 
-POSIX:
-- Установить через пакетный менеджер (например, `apt install libraylib-dev` для Ubuntu);
-- Скрипт сборки использует системные библиотеки.
+- POSIX:
+    - Установить через пакетный менеджер (например, `apt install libraylib-dev` для Ubuntu);
+    - Скрипт сборки использует системные библиотеки.
 
 **raygui:**
 - Включён в исходный код проекта в директории `src/raygui/`;
